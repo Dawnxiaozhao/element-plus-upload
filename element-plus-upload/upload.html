@@ -1,0 +1,79 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <script src="https://unpkg.com/vue@next"></script>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/lib/theme-chalk/index.css">
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-plus/lib/index.full.js"></script>
+    <title>Element Plus demo</title>
+  </head>
+  <body>
+    <div id="app">
+      <el-upload
+          action="#"
+          list-type="picture-card"
+          :auto-upload="false"
+          :on-change="handleChange"
+          :file-list="fileList"
+        >
+          <template #default>
+            <i class="el-icon-plus"></i>
+          </template>
+          <template #file="{ file }">
+            <div>
+              <img
+                class="el-upload-list__item-thumbnail"
+                :src="file.url"
+                alt=""
+              />
+              <span class="el-upload-list__item-actions">
+                <span
+                  class="el-upload-list__item-delete"
+                  @click="handleRemove(file)"
+                >
+                  <i class="el-icon-delete"></i>
+                </span>
+              </span>
+            </div>
+          </template>
+        </el-upload>
+    </div>
+    <script>
+      const App = {
+        data() {
+          return {
+            message: "Hello Element Plus1",
+            fileList:[]
+          };
+        },
+        methods:{
+          handleRemove(file){
+             this.fileList = this.fileList.filter((el) => {
+                return el.fileId != file.fileId;
+              });
+            console.log(this.fileList)
+              this.$forceUpdate();
+          },
+          handleChange(file, fileList){
+             var fileType = file.name.substring(file.name.lastIndexOf(".") + 1);
+            if (fileType.indexOf("png") == -1 &&fileType.indexOf("jpg") == -1 &&fileType.indexOf("jpeg") == -1) {
+              console.log("只能上传图片")
+              var arrList = fileList;
+              this.fileList = arrList.filter((el) => {
+                return el.name != file.name;
+              });
+               this.$forceUpdate();
+              console.log(this.fileList)
+              //输入fileList数据正确 但是还是渲染了 同一个不是图片的文件上传两次或者更多 但是第一次有时候是可以刷新页面的 后面再上次就不会刷新页面
+            }
+          }
+        }
+      };
+      const app = Vue.createApp(App);
+      app.use(ElementPlus);
+      app.mount("#app");
+    </script>
+  </body>
+</html>
